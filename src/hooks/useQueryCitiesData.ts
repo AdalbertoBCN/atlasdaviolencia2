@@ -7,6 +7,12 @@ interface DataItem {
   periodo: string;
 }
 
+export interface QueryDataCities{
+  id: string,
+  date: string,
+  value: number
+}
+
 interface UseChartDataProps {
   selectedCityId: string;
 }
@@ -16,14 +22,22 @@ export function useQueryCitiesData({ selectedCityId }: UseChartDataProps) {
   const PROXY_URL =
     "https://corsproxy.io/?" + encodeURIComponent(URL_CITY_DATA);
 
-  return useQuery<DataItem[]>({
+  return useQuery<QueryDataCities[]>({
     queryKey: ["get-data", selectedCityId],
     queryFn: async () => {
       const response = await fetch(PROXY_URL);
 
-      const data = await response.json();
+      const data:DataItem[] = await response.json();
 
-      return data;
+      const formatData = data.map(item => {
+        return {
+          id: item.cod,
+          date: item.periodo,
+          value: Number(item.valor)
+        }
+      })
+
+      return formatData;
     },
   });
 }

@@ -1,6 +1,7 @@
 import { useQueryCities } from "@/hooks/useQueryCities";
 import { useQueryCitiesData } from "@/hooks/useQueryCitiesData";
 import { useSearchParams } from "next/navigation";
+import { DataBarChart } from "./bar-chart";
 
 export default function ChartRoot() {
     const searchParams = useSearchParams();
@@ -16,7 +17,7 @@ export default function ChartRoot() {
 
     return (
         <div>
-            <pre>{JSON.stringify(data, null, 2)}</pre>
+            <DataBarChart data={data}/>
         </div>
     );
 }

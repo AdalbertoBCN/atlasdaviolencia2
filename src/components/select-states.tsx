@@ -17,6 +17,8 @@ export default function SelectState() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const selectedFilter = searchParams.get("filter");
+
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -49,7 +51,7 @@ export default function SelectState() {
         <Skeleton className='w-[200px] h-10 bg-neutral-300'/>
       ) : (
         <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
+          <PopoverTrigger asChild disabled={!["cidade", "estado"].includes(selectedFilter ?? "") }>
             <Button
               variant="outline"
               role="combobox"
@@ -57,7 +59,7 @@ export default function SelectState() {
               className="w-[200px] justify-between"
               defaultValue={"Minas Gerais"}
             >
-              {filter && selectedState
+              {filter && selectedState && ["cidade", "estado"].includes(selectedFilter ?? "")
                 ? states?.find((state) => state.nome === filter)?.nome
                 : "Selecione um estado..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

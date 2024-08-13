@@ -16,13 +16,14 @@ export default function SelectCities() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const selectedState = searchParams.get("state") ?? "default";
+  const selectedState = searchParams.get("state");
   const selectedCity = searchParams.get("city");
+  const selectedFilter = searchParams.get("filter");
 
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState(selectedCity ?? "")
 
-  const { data: cities, isLoading: isLoadingCities } = useQueryCities({ selectedState });
+  const { data: cities, isLoading: isLoadingCities } = useQueryCities({ selectedState: selectedState ?? "default" });
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -46,14 +47,14 @@ export default function SelectCities() {
         <Skeleton className='w-[225px] h-10 bg-neutral-300' />
       ) : (
         <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
+          <PopoverTrigger asChild disabled={selectedState === null || selectedFilter !== "cidade"}>
             <Button
               variant="outline"
               role="combobox"
               aria-expanded={open}
               className="w-[225px] justify-between"
             >
-              {filter && selectedCity
+              {filter && selectedCity && selectedFilter === "cidade"
                 ? cities?.find((city) => city.nome === filter)?.nome
                 : "Selecione uma cidade..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
