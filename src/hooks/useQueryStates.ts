@@ -13,10 +13,8 @@ export function useQueryStates() {
 
       const data = await response.json();
       
-      console.log(data);
-      
       return data;
-    }
+    },
   })
   
 }

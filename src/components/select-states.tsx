@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
-import { cn } from '@/lib/utils';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { cn, createQueryString } from '@/lib/utils';
 import { useQueryStates } from '@/hooks/useQueryStates';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useCallback } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Skeleton } from './ui/skeleton';
+import React from 'react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SelectState() {
   const { data: states, isLoading: isLoadingStates } = useQueryStates();
@@ -18,32 +18,20 @@ export default function SelectState() {
   const searchParams = useSearchParams();
 
   const selectedFilter = searchParams.get("filter");
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set(name, value)
-      params.delete("city");
-
-      return params.toString()
-    },
-    [searchParams]
-  )
-
   const selectedState = searchParams.get("state");
 
-  const [open, setOpen] = React.useState(false)
-  const [filter, setFilter] = React.useState("")
+  const [open, setOpen] = React.useState(false);
+  const [filter, setFilter] = React.useState("");
 
-  function handleStateChange(selectedState: string) {
-    router.push(pathname + "?" + createQueryString("state", selectedState))
-  }
-
+  const handleStateChange = (selectedState: string) => {
+    const queryString = createQueryString(searchParams, "state", selectedState, ["city"]);
+    router.push(`${pathname}?${queryString}`);
+  };
 
   React.useEffect(() => {
-    const stateName = states?.find(state => state.sigla === selectedState)?.nome
-    setFilter(stateName ?? "")
-  }, [selectedState, states])
+    const stateName = states?.find(state => state.sigla === selectedState)?.nome;
+    setFilter(stateName ?? "");
+  }, [selectedState, states]);
 
   return (
     <>
@@ -51,13 +39,12 @@ export default function SelectState() {
         <Skeleton className='w-[200px] h-10 bg-neutral-300'/>
       ) : (
         <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild disabled={!["cidade", "estado"].includes(selectedFilter ?? "") }>
+          <PopoverTrigger asChild disabled={!["cidade", "estado"].includes(selectedFilter ?? "")}>
             <Button
               variant="outline"
               role="combobox"
               aria-expanded={open}
               className="w-[200px] justify-between"
-              defaultValue={"Minas Gerais"}
             >
               {filter && selectedState && ["cidade", "estado"].includes(selectedFilter ?? "")
                 ? states?.find((state) => state.nome === filter)?.nome
@@ -76,9 +63,9 @@ export default function SelectState() {
                       key={state.id}
                       value={state.nome}
                       onSelect={(currentValue: any) => {
-                        handleStateChange(state.sigla.toString())
-                        setFilter(currentValue === filter ? "" : currentValue)
-                        setOpen(false)
+                        setFilter(currentValue === filter ? "" : currentValue);
+                        setOpen(false);
+                        handleStateChange(state.sigla.toString());
                       }}
                     >
                       <Check
@@ -96,7 +83,6 @@ export default function SelectState() {
           </PopoverContent>
         </Popover>
       )}
-
     </>
   );
 }
