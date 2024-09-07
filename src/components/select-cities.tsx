@@ -1,14 +1,14 @@
 "use client";
 
-import { useQueryCities } from '@/hooks/useQueryCities';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useCallback } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { Check, ChevronsUpDown } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { cn, createQueryString } from '@/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useQueryCities } from '@/hooks/useQueryCities';
+import { cn, createQueryString } from '@/lib/utils';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React from 'react';
 
 export default function SelectCities() {
   const searchParams = useSearchParams();
